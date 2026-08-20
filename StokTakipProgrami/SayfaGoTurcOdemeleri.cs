@@ -1,0 +1,17 @@
+﻿using System;
+using System.Data;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace StokTakipProgrami
+{
+    public partial class SayfaGoTurcOdemeleri : UserControl
+    {
+        private DataGridView dgvFinans;
+        private Label lblCiro, lblKomisyon, lblKargo, lblNet;
+        public SayfaGoTurcOdemeleri() { InitializeComponent(); this.Load += (s, e) => { InsaEt(Color.FromArgb(16, 172, 132), "GOTURC"); Hesapla(); }; }
+        private void InsaEt(Color tema, string ad) { this.Controls.Clear(); this.Dock = DockStyle.Fill; this.BackColor = Color.FromArgb(33, 33, 36); Panel pH = new Panel { Dock = DockStyle.Top, Height = 55, BackColor = tema }; pH.Controls.Add(new Label { Text = $"📚 {ad} ÖDEME VE MUTABAKAT MERKEZİ", Dock = DockStyle.Fill, Font = new Font("Segoe UI", 12F, FontStyle.Bold), ForeColor = Color.White, TextAlign = ContentAlignment.MiddleCenter }); this.Controls.Add(pH); TableLayoutPanel tW = new TableLayoutPanel { Dock = DockStyle.Top, Height = 85, ColumnCount = 4, RowCount = 1, Padding = new Padding(5) }; for (int i = 0; i < 4; i++) tW.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F)); this.Controls.Add(tW); lblCiro = KutucukYarat(tW, "🛍️ BRÜT CİRO", Color.SkyBlue, 0); lblKomisyon = KutucukYarat(tW, "✂️ KOMİSYON", Color.Crimson, 1); lblKargo = KutucukYarat(tW, "🚚 KARGO MALİYETİ", Color.Orange, 2); lblNet = KutucukYarat(tW, "💰 NET PAYOUT", Color.LimeGreen, 3); Panel pG = new Panel { Dock = DockStyle.Fill, Padding = new Padding(15) }; GroupBox g = new GroupBox { Dock = DockStyle.Fill, Text = $"📋 {ad} Canlı Finans Hareketleri", ForeColor = tema, Font = new Font("Segoe UI", 10F, FontStyle.Bold) }; dgvFinans = new DataGridView { Dock = DockStyle.Fill, AllowUserToAddRows = false, ReadOnly = true, BackgroundColor = Color.FromArgb(24, 24, 27), RowHeadersVisible = false, SelectionMode = DataGridViewSelectionMode.FullRowSelect, BorderStyle = BorderStyle.None, ColumnHeadersHeight = 35 }; dgvFinans.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(45, 45, 48); dgvFinans.ColumnHeadersDefaultCellStyle.ForeColor = Color.White; dgvFinans.DefaultCellStyle.BackColor = Color.FromArgb(33, 33, 36); dgvFinans.DefaultCellStyle.ForeColor = Color.White; g.Controls.Add(dgvFinans); pG.Controls.Add(g); this.Controls.Add(pG); pG.BringToFront(); }
+        private Label KutucukYarat(TableLayoutPanel t, string b, Color c, int s) { Panel p = new Panel { Dock = DockStyle.Fill, BackColor = Color.FromArgb(26, 26, 28), Margin = new Padding(5) }; Panel l = new Panel { Dock = DockStyle.Left, Width = 5, BackColor = c }; p.Controls.Add(l); p.Controls.Add(new Label { Text = b, Dock = DockStyle.Top, Height = 22, Padding = new Padding(8, 5, 0, 0), Font = new Font("Segoe UI", 8F, FontStyle.Bold), ForeColor = Color.DarkGray }); Label v = new Label { Text = "0.00 TL", Dock = DockStyle.Fill, Padding = new Padding(8, 5, 0, 0), Font = new Font("Segoe UI Black", 14F, FontStyle.Bold), ForeColor = Color.White }; p.Controls.Add(v); t.Controls.Add(p, s, 0); return v; }
+        private void Hesapla() { DataTable dt = new DataTable(); dt.Columns.Add("Tarih"); dt.Columns.Add("Sipariş No"); dt.Columns.Add("Ürün"); dt.Columns.Add("Ciro", typeof(double)); dt.Columns.Add("Net", typeof(double)); dgvFinans.DataSource = dt; }
+    }
+}
